@@ -1,11 +1,9 @@
-# Omikron
+# JSTest
 
-![](https://api.travis-ci.org/Hakerh400/omikron.svg?branch=master)
+![](https://api.travis-ci.org/Hakerh400/jstest.svg?branch=master)
 
-JavaScript framework.
+JavaScript testing framework.
 
 # Mirrors
 
 * https://github.com/Hakerh400/omikron
-* https://gitlab.com/Hakerh400/omikron
-* https://bitbucket.org/Hakerh400/omikron/src/master/
