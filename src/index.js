@@ -24,7 +24,7 @@ const addDir = (dir, rec=0) => {
 };
 
 const out = str => {
-  console.log(str);
+  process.stdout.write(str);
 };
 
 const fatalErr = err => {
@@ -41,9 +41,9 @@ const fatalErr = err => {
 
     try{
       await func();
-      out('\x1B[92mOK\x1B[0m\n');
+      out('\x1B[32mOK\x1B[0m\n');
     }catch(err){
-      out(`\x1B[91mFAIL\n\n${util.inspect(err)}\x1B[0m\n\n`);
+      out(`\x1B[31mFAIL\n\n${util.inspect(err)}\x1B[0m\n\n`);
       process.exitCode = 1;
       break;
     }
