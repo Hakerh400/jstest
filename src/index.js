@@ -41,9 +41,9 @@ const fatalErr = err => {
 
     try{
       await func();
-      out('\x1B[32mOK\x1B[0m\n');
+      out('\x1B[1;32mOK\x1B[0m\n');
     }catch(err){
-      out(`\x1B[31mFAIL\n\n${util.inspect(err)}\x1B[0m\n\n`);
+      out(`\x1B[1;31mFAIL\n\n${util.inspect(err)}\x1B[0m\n\n`);
       process.exitCode = 1;
       break;
     }
