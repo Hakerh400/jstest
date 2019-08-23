@@ -24,7 +24,7 @@ const addDir = (dir, rec=0) => {
 };
 
 const out = str => {
-  process.stdout.write(str);
+  console.log(str);
 };
 
 const fatalErr = err => {

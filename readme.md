@@ -6,4 +6,4 @@ JavaScript testing framework.
 
 # Mirrors
 
-* https://github.com/Hakerh400/omikron
+* https://github.com/Hakerh400/jstest
