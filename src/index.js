@@ -43,7 +43,11 @@ const fatalErr = err => {
       await func();
       out('\x1B[1;32m OK\x1B[0m\n');
     }catch(err){
-      out(`\x1B[1;31m FAIL\n\n${util.inspect(err)}\x1B[0m\n\n`);
+      out(`\x1B[1;31m FAIL\x1B[0m\n\n${
+        util.inspect(err).split(/\r\n|\r|\n/).map(line => {
+          return `\x1B[1;31m${line}\x1B[0m`;
+        }).join('\n')
+      }\n\n`);
       process.exitCode = 1;
     }
   }
