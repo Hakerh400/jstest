@@ -65,9 +65,9 @@ const fatalErr = err => {
 
       try{
         await func();
-        out(tab('\x1B[1;32m OK\x1B[0m\n'));
+        out('\x1B[1;32m OK\x1B[0m\n');
       }catch(err){
-        out(tab(`\x1B[1;31m FAIL\x1B[0m\n\n${formatErr(err)}\n\n`));
+        out(`\x1B[1;31m FAIL\x1B[0m\n\n${formatErr(err)}\n\n`);
         process.exitCode = 1;
       }
     }
