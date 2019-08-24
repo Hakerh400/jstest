@@ -5,21 +5,35 @@ const path = require('path');
 const assert = require('assert');
 const jstest = require('..');
 
-jstest.add('Synchronous passing test', () => {
-  assert.strictEqual([1, 2, 3].pop(), 3);
-});
+const {part, test} = jstest;
 
-jstest.add('Asynchronous passing test', async () => {
-  await Promise.resolve('ok');
-  return new Promise(res => {
-    setTimeout(res);
+part('Passing tests', () => {
+  test('Synchronous test', () => {
+    assert.strictEqual([1, 2, 3].pop(), 3);
+  });
+
+  test('Asynchronous test', async () => {
+    await Promise.resolve('ok');
+    await new Promise(res => setTimeout(res, 1e3));
   });
 });
 
-jstest.add('Synchronous failing test', () => {
-  throw new TypeError('oops!');
+part('Failing tests', async () => {
+  test('Synchronous test', () => {
+    throw new TypeError('oops!');
+  });
+
+  await new Promise(res => setTimeout(res, 1e3));
+
+  test('Asynchronous test', () => {
+    return new Promise((res, rej) => {
+      setTimeout(() => rej(['abc']), 1e3);
+    });
+  });
 });
 
-jstest.add('Asynchronous failing test', () => {
-  return Promise.reject(['abc']);
+part('Other tests', () => {
+  test('Empty test', () => {});
+  test('Invalid test', null);
+  test('Unresolved test', () => new Promise(() => {}));
 });

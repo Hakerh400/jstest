@@ -6,12 +6,20 @@ const util = require('util');
 const fsRec = require('./fs-rec');
 const Semaphore = require('./semaphore');
 
+const TAB_SIZE = 2;
+const TAB = ' '.repeat(TAB_SIZE);
+
+const parts = [];
 const tests = [];
-const sem = new Semaphore(0);
+const semPart = new Semaphore(0);
+
+const addPart = (name, func) => {
+  parts.push([name, func]);
+  semPart.signal();
+};
 
 const addTest = (name, func) => {
   tests.push([name, func]);
-  sem.signal();
 };
 
 const addDir = (dir, rec=0) => {
@@ -27,6 +35,16 @@ const out = str => {
   process.stdout.write(str);
 };
 
+const tab = str => {
+  return `${TAB}${str}`;
+};
+
+const formatErr = err => {
+  return util.inspect(err).split(/\r\n|\r|\n/).map(line => {
+    return tab(`\x1B[1;31m${line}\x1B[0m`);
+  }).join('\n');
+};
+
 const fatalErr = err => {
   console.log(err);
   process.exitCode = 1;
@@ -34,28 +52,42 @@ const fatalErr = err => {
 
 (async () => {
   while(1){
-    await sem.wait();
+    await semPart.wait();
 
-    const [name, func] = tests.shift();
-    out(name.padEnd(80, '.'));
+    const [name, func] = parts.shift();
+    out(`\x1B[1;33m=== ${name} ===\x1B[0m\n\n`);
 
-    try{
-      await func();
-      out('\x1B[1;32m OK\x1B[0m\n');
-    }catch(err){
-      out(`\x1B[1;31m FAIL\x1B[0m\n\n${
-        util.inspect(err).split(/\r\n|\r|\n/).map(line => {
-          return `\x1B[1;31m${line}\x1B[0m`;
-        }).join('\n')
-      }\n\n`);
-      process.exitCode = 1;
+    await func();
+
+    for(const test of tests){
+      const [name, func] = test;
+      out(tab(name.padEnd(80, '.')));
+
+      try{
+        await func();
+        out(tab('\x1B[1;32m OK\x1B[0m\n'));
+      }catch(err){
+        out(tab(`\x1B[1;31m FAIL\x1B[0m\n\n${formatErr(err)}\n\n`));
+        process.exitCode = 1;
+      }
     }
+
+    tests.length = 0;
+    out('\n');
   }
 
   out('\n');
 })().catch(fatalErr);
 
+process.on('exit', () => {
+  if(tests.length !== 0){
+    out('\n\n\x1B[1;31mError: Unresolved tests left\x1B[0m\n\n');
+    process.exitCode = 1;
+  }
+});
+
 module.exports = {
-  add: addTest,
+  part: addPart,
+  test: addTest,
   dir: addDir,
 };
