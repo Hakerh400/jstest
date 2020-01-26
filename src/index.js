@@ -61,7 +61,7 @@ const fatalErr = err => {
 
     for(const test of tests){
       const [name, func] = test;
-      out(tab(name.padEnd(80, '.')));
+      out(tab(`${name} `.padEnd(80, '.')));
 
       try{
         await func();
